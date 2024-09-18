@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace Config;
 
@@ -15,7 +15,7 @@ class Config
     /**
      * @var array|false $param Tableau des paramètres de configuration ou false si non chargé
      */
-    private static array|false $param;
+    private static array|false $param = false;
 
     /**
      * Renvoie la valeur d'un paramètre de configuration
@@ -63,5 +63,28 @@ class Config
             }
         }
         return self::$param;
+    }
+
+
+    /**
+     * Renvoie la configuration de la base de données
+     *
+     * Cette méthode récupère les paramètres de configuration de la base de données
+     * en utilisant les clés 'DB.dsn', 'DB.user' et 'DB.pass' du fichier de configuration.
+     *
+     * @return array Tableau associatif contenant les paramètres de configuration de la base de données
+     * @throws Exception Si aucun fichier de configuration n'est trouvé
+     */
+    public static function getDBConfig(): array
+    {
+        $dsn = self::get('dsn');
+        $user = self::get('user');
+        $pass = self::get('pass');
+
+        return [
+            'dsn' => $dsn,
+            'user' => $user,
+            'pass' => $pass
+        ];
     }
 }
