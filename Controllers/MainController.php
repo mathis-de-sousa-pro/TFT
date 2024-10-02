@@ -5,6 +5,7 @@ namespace Controllers;
 use Exception;
 use League\Plates\Engine;
 use Models\UnitDAO;
+use Views\constructor;
 
 class MainController
 {
@@ -21,7 +22,15 @@ class MainController
     public function index(): void
     {
         $unitDAO = new UnitDAO();
-
-        echo $this->templates->render('home', ['getAll' => $unitDAO->getAll()[0]]);
+        $units = $unitDAO->getAll();
+        $cardsHtml = constructor::createAllCards($units);
+        $navBar = constructor::createNavbar();
+        echo $this->templates->render('home', ['cardsHtml' => $cardsHtml, 'navBar' => $navBar]);
     }
+
+    public function addUnit()
+    {
+        echo $this->templates->render('home', ['cardsHtml' => '', 'navBar' => constructor::createForm()]);
+    }
+
 }
