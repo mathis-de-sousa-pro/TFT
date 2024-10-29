@@ -4,6 +4,7 @@ require_once 'Helpers/Psr4AutoloaderClass.php';
 require_once 'Controllers/MainController.php';
 
 use Controllers\MainController;
+use Controllers\Router\Router;
 use Helpers\Psr4AutoloaderClass;
 
 $loader = new Psr4AutoloaderClass();
@@ -17,14 +18,6 @@ $loader->addNamespace('\Config', 'Config');
 $loader->addNamespace('\Views', 'Views');
 $mainController = new MainController();
 
-$mainController->index();
+$router = new Router("action");
+$router->routing($_GET, $_POST);
 
-if(!empty($_GET['action']))
-   if (isset($_GET["action"])){
-       switch ($_GET["ection"]){
-           case "add-unit": $mainController->addUnit();
-           case "search":
-           default: $mainController->index();
-
-       }
-   }

@@ -4,33 +4,26 @@ namespace Controllers;
 
 use Exception;
 use League\Plates\Engine;
-use Models\UnitDAO;
+use Models\DAO\UnitDAO;
+use Models\Managers\UnitManager;
 use Views\constructor;
 
 class MainController
 {
     private Engine $templates;
+    private UnitManager $unitManager;
 
     public function __construct()
     {
         $this->templates = new Engine('./Views');
+        $this->unitManager = new UnitManager();
     }
 
-    /**
-     * @throws Exception
-     */
     public function index(): void
     {
-        $unitDAO = new UnitDAO();
-        $units = $unitDAO->getAll();
+        $units = $this->unitManager->getAll();
         $cardsHtml = constructor::createAllCards($units);
-        $navBar = constructor::createNavbar();
-        echo $this->templates->render('home', ['cardsHtml' => $cardsHtml, 'navBar' => $navBar]);
-    }
-
-    public function addUnit()
-    {
-        echo $this->templates->render('home', ['cardsHtml' => '', 'navBar' => constructor::createForm()]);
+        echo $this->templates->render('home', ['cardsHtml' => $cardsHtml]);
     }
 
 }

@@ -24,6 +24,21 @@ class Unit
         return $this->id;
     }
 
+
+    public function __construct(
+        ?string $id = null,
+        string $name = '',
+        int $cost = 0,
+        string $origin = '',
+        string $url_img = ''
+    ) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->cost = $cost;
+        $this->origin = $origin;
+        $this->url_img = $url_img;
+    }
+
     /**
      * Set the ID of the unit.
      *
@@ -129,5 +144,7 @@ class Unit
                 $this->$method($value);
             }
         }
+        $this->url_img = $data['url_img'] ?? '';
+
     }
 }

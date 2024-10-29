@@ -6,7 +6,7 @@ class constructor
 {
     public static function createAllCards($units): string
     {
-        $html = '<div class="row row-cols-1 row-cols-xl-3 row-cols-xxl-5 row-cols-md-2 g-5 m-5">';
+        $html = '<div class="row row-cols-1 row-cols-xl-3 row-cols-xxl-5 row-cols-md-2 g-5 m-3">';
         foreach ( $units as $unit )
         {
             $html .= self::createCard($unit);
@@ -15,66 +15,48 @@ class constructor
         return $html;
     }
 
-
     public static function createCard($unit): string
     {
-        $imageUrl = htmlspecialchars($unit['url_image']);
+        // Utilisation des getters de l'objet `Unit` pour obtenir les propriétés
+        $imageUrl = htmlspecialchars($unit->getUrlImg());
+        $unitId = htmlspecialchars($unit->getId());
+        $unitName = htmlspecialchars($unit->getName());
+        $unitCost = htmlspecialchars($unit->getCost());
+        $unitOrigin = htmlspecialchars($unit->getOrigin());
+
         return '
-        <div class="col">
-            <div class="card h-100 text-white shadow">
-                <img class="card-img" src="' . $imageUrl . '" alt="Card image">
-                <div class="card-img-overlay">
-                    <div class="card-text text-center d-flex align-items-center" style="height: 100%">
-                        <div id="carouselExample' . htmlspecialchars($unit['id']) . '" class="carousel slide flex-fill">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <h1>' . htmlspecialchars($unit['name']) . '</h1>
-                                </div>
-                                <div class="carousel-item">
-                                    <h1>' . htmlspecialchars($unit['cost']) . '</h1>
-                                </div>
-                                <div class="carousel-item">
-                                    <h1>' . htmlspecialchars($unit['origin']) . '</h1>
-                                </div>
+    <div class="col">
+        <div class="card h-100 text-white shadow">
+            <img class="card-img" src="' . $imageUrl . '" alt="Card image">
+            <div class="card-img-overlay">
+                <div class="card-text text-center d-flex align-items-center" style="height: 100%">
+                    <div id="carouselExample' . $unitId . '" class="carousel slide flex-fill">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <h1>' . $unitName . '</h1>
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample'
-               . htmlspecialchars($unit['id']) . '" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample'
-               . htmlspecialchars($unit['id']) . '" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
+                            <div class="carousel-item">
+                                <h1>' . $unitCost . '</h1>
+                            </div>
+                            <div class="carousel-item">
+                                <h1>' . $unitOrigin . '</h1>
+                            </div>
                         </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample'
+            . $unitId . '" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample'
+            . $unitId . '" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>';
-    }
-
-    public static function createNavbar()
-    {
-        return '
-        <nav class="m-3 mx-5 py-4 navbar rounded shadow navbar-expand-lg navbar-light bg-body-secondary fixed-top ">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../index.php">
-                <img src="https://cdn-icons-png.flaticon.com/512/3208/3208681.png " alt="logo"
-                     width="50" height="50" class="d-inline-block align-top">
-            </a>
-            <a class="navbar-brand" href="../index.php?action=add-unit-origin">
-                <img src="https://cdn-icons-png.flaticon.com/512/738/738882.png" alt="logo" width="50" height="50"
-                     class="d-inline-block align-top">
-            </a>
-            
-            <a class="navbar-brand" href="../index.php?action=search">
-                <img src="https://cdn-icons-png.flaticon.com/512/751/751381.png " alt="logo" width="50" height="50"
-                     class="d-inline-block align-top">
-            </a>
         </div>
-    </nav>
-    ';
+    </div>';
     }
 
     public static function createForm()
