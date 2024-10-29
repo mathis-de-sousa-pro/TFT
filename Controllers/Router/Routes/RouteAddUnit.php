@@ -17,7 +17,7 @@ class RouteAddUnit extends Route
 
     public function getRoute(array $params): void
     {
-        $this->uc->displayAddUnitWindow($params);
+        $this->uc->displayAddUnitWindow();
     }
 
     public function postRoute(array $params): void

@@ -25,7 +25,7 @@ class constructor
         $unitOrigin = htmlspecialchars($unit->getOrigin());
 
         return '
-    <div class="col">
+    <div class="col align-self-center" style="max-height: 50vw; max-width: 50vw;">
         <div class="card h-100 text-white shadow">
             <img class="card-img" src="' . $imageUrl . '" alt="Card image">
             <div class="card-img-overlay">
@@ -42,13 +42,11 @@ class constructor
                                 <h1>' . $unitOrigin . '</h1>
                             </div>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample'
-            . $unitId . '" data-bs-slide="prev">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample' . $unitId . '" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample'
-            . $unitId . '" data-bs-slide="next">
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample' . $unitId . '" data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
@@ -59,23 +57,19 @@ class constructor
     </div>';
     }
 
-    public static function createForm()
+    public static function createMessageNotification(string $text): string
     {
-        return '   
-    <div class="container m-5 py-5">
-        <div class="form">
-            <div class="row">
-                <input type="text" class="form-control" placeholder="name" aria-label="name">
-            </div>
-            <div class="row">
-                <input type="text" class="form-control" placeholder="url image" aria-label="url image">
-            </div>
-            <div class="row">
-                <label for="customRange3" class="form-label">cost</label>
-                <input type="range" class="form-range" min="1" max="5" step="1" id="customRange3">
-            </div>
+        // Détecte la présence du mot "erreur" dans le texte pour définir la couleur
+        $bgColorClass = stripos($text, 'erreur') !== false ? 'text-bg-danger' : 'text-bg-success';
 
-        </div>
-    </div>';
+        return '
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="max-width: 400px;">
+          <div id="liveToast" class="toast ' . $bgColorClass . ' border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header ' . $bgColorClass . ' text-white">
+              <img src="https://seeklogo.com/images/T/teamfight-tactics-logo-4B66ABB0E4-seeklogo.com.png" class="rounded me-2" style="max-height: 5vw" alt="icon">
+              <p class="fs-3">' . htmlspecialchars($text) . '</p>
+            </div>
+          </div>
+        </div>';
     }
 }

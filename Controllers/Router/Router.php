@@ -81,7 +81,7 @@ class Router
             "add-unit-origin" => new RouteAddUnitOrigin($this->ctrlList["unit"]),
             "edit-unit" => new RouteEditUnit($this->ctrlList["unit"]),
             "search" => new RouteSearch($this->ctrlList["unit"]),
-            "delete" => new RouteDelete($this->ctrlList["unit"])
+            "delete-unit" => new RouteDelete($this->ctrlList["unit"]) // Modifier ici
             ];
     }
 

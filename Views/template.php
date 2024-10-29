@@ -44,7 +44,7 @@
             <a class="navbar-brand" href="/TFT/index.php?action=edit-unit">
                 <span class="material-symbols-outlined">edit</span>
             </a>
-            <a class="navbar-brand" href="/TFT/index.php?action=delete">
+            <a class="navbar-brand" href="/TFT/index.php?action=delete-unit">
                 <span class="material-symbols-outlined">delete_forever</span>
             </a>
 

@@ -7,28 +7,27 @@ use Controllers\Router\Route;
 
 class RouteEditUnit extends Route
 {
-
     private UnitController $uc;
 
-    public function __construct(UnitController $euc)
+    public function __construct(UnitController $uc)
     {
-        $this->uc = $euc;
+        $this->uc = $uc;
     }
 
     public function getRoute(array $params): void
     {
-        // Si un ID d'unité est fourni, affiche le formulaire de modification avec les données de l'unité
+        // Si un ID d'unité est fourni, affiche le formulaire pré-rempli
         if (isset($params['unitId'])) {
-            $this->uc->displayEditUnitView($params['unitId']);
+            $this->uc->displayEditUnitWindow($params['unitId']);
         } else {
-            // Sinon, affiche la liste des unités pour en sélectionner une
-            $this->uc->displayUnitSelectionView();
+            // Si aucun `unitId` n'est défini, affiche le formulaire vide avec la liste de sélection
+            $this->uc->displayEditUnitWindow();
         }
     }
 
     public function postRoute(array $params): void
     {
-        // Met à jour l'unité avec les données du formulaire de modification
+        // Enregistre les modifications de l'unité sélectionnée
         $this->uc->updateUnit($params);
     }
 }

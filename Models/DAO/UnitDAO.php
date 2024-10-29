@@ -44,34 +44,38 @@ class UnitDAO extends PDODAO
      * @return Unit|false Retourne un Unit ou false si aucune unité n'est trouvée.
      * @throws Exception si une erreur se produit lors de l'exécution de la requête, si l'id n'existe pas.
      */
-    public function read(string $id): Unit|false
+    public function read(string $unitId): ?Unit
     {
-        $sql = 'SELECT * FROM unit WHERE id = ?';
-        $stmt = $this->execRequest($sql, [$id]);
-        if (!$stmt)
-            $result = false;
-        else
-        {
-            $result = new Unit();
-            $result->hydrate($stmt->fetch());
+        $sql = "SELECT * FROM unit WHERE id = :id";
+        $stmt =  $this->execRequest($sql, ['id' => $unitId]);
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Vérifie si le résultat est `false`, indiquant qu'aucune unité n'a été trouvée
+        if ($data === false) {
+            return null; // Aucun résultat trouvé, retourne `null`
         }
-        return $result;
+
+        $unit = new Unit();
+        $unit->hydrate($data); // Hydrate l'unité avec les données trouvées
+        return $unit;
     }
 
-    /**
-     * @throws Exception si une erreur se produit lors de la suppression de l'élément
-     */
-    public function delete(int $id): bool
+    public function delete(string $unitId): bool
     {
-        $result = false;
-        $sql = 'DELETE FROM unit WHERE id = ?';
-        $stmt = $this->execRequest($sql, [$id]);
+        // Vérifie si l'unité existe avant de tenter la suppression
+        $unit = $this->read($unitId);
+        if ($unit === null) {
+            // L'unité n'existe pas, retourne `false` ou génère une exception
+            return false;
+        }
 
-        if (!$this->read($id))
-            $result = true;
-
-        return $result;
+        // Supprime l'unité si elle existe
+        $sql = "DELETE FROM unit WHERE id = :id";
+        $stmt = $this->execRequest($sql, ['id' => $unitId]);
+        return true;
     }
+
 
     public function update(Unit $unit): bool
     {
