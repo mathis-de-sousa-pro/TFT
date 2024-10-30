@@ -56,8 +56,4 @@ abstract class PDODAO
         }
     }
 
-    protected function getLastInsertedId(): int
-    {
-        return $this->getDB()->lastInsertId();
-    }
 }

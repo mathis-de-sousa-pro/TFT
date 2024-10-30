@@ -3,57 +3,54 @@
 namespace Controllers;
 
 use League\Plates\Engine;
+use Models\Managers\OriginManager;
 use Models\Managers\UnitManager;
-use Models\Unit;
+use Views\constructor;
 
 class UnitController
 {
     private Engine $templates;
     private UnitManager $unitManager;
+    private OriginManager $originManager;
     private MainController $mainController; // Utilisation du MainController pour rediriger vers l'index
 
     public function __construct()
     {
-        $this->templates = new Engine('./Views');
-        $this->unitManager = new UnitManager();
-        $this->mainController = new MainController(); // Initialisation de MainController
+        $this -> templates = new Engine('./Views');
+        $this -> unitManager = new UnitManager();
+        $this -> mainController = new MainController();
+        $this -> originManager = new OriginManager();
     }
 
     public function displayEditUnitWindow(string $unitId = null): void
     {
-        // Récupère toutes les unités pour la liste de sélection
-        $units = $this->unitManager->getAll();
+        $all = $this -> unitManager -> getAll();
+        if (is_bool($all))
+        {
+            $this -> mainController -> indexWithNotification('erreur lors de l\'affichage de la page');
+            return;
+        }
+
+        $units = $all;
         $selectedUnit = null;
+        $selectedUnitOrigins = [];
+        $origins = [];
 
         // Si un ID est fourni, récupère les données de l'unité sélectionnée
-        if ($unitId) {
-            $selectedUnit = $this->unitManager->get($unitId);
-        }
-
-        echo $this->templates->render('editUnitView', [
-            'units' => $units,
-            'selectedUnit' => $selectedUnit
-        ]);
-    }
-
-    public function updateUnit(array $data): void
-    {
-        // Vérifie que `unitId` est bien défini dans les données POST
-        if (empty($data['Id'])) {
-            echo "Error: Unit ID is missing.";
-            return;
-        }
-
-        // Création d'une nouvelle instance d'unité et hydratation des données
-        $unit = new Unit();
-        $unit->hydrate($data);
-        // Mise à jour de l'unité via le manager
-        if( $this->unitManager->updateUnit($data))
+        if ($unitId)
         {
-            $this->mainController->indexWithNotification('modification enregistrée');
-            return;
+            $selectedUnit = $this -> unitManager -> get($unitId);
+            $selectedUnitOrigins = $this->originManager->getOriginsForUnit($unitId);
+            $origins = $this->originManager->getAll();
         }
-        $this->mainController->indexWithNotification('erreur lors de la modification');
+
+
+
+        echo $this -> templates -> render('editUnitView', [
+            'units' => $units,
+            'selectedUnit' => $selectedUnit,
+            'listOrigins' => constructor::createOriginSelection($origins, $selectedUnitOrigins)
+        ]);
     }
 
     public function displaySearchView(): void
@@ -62,37 +59,41 @@ class UnitController
         $reflectionClass = new \ReflectionClass('Models\\Unit');
         $unitProperties = [];
 
-        foreach ($reflectionClass->getProperties() as $property) {
-            $unitProperties[] = $property->getName();
+        foreach ($reflectionClass -> getProperties() as $property)
+        {
+            $unitProperties[] = $property -> getName();
         }
 
         // Transmet les propriétés à la vue
-        echo $this->templates->render('searchView', ['unitProperties' => $unitProperties]);
+        echo $this -> templates -> render('searchView', ['unitProperties' => $unitProperties]);
     }
 
     public function displayAddUnitWindow(): void
     {
-        echo $this->templates->render('addUnitView');
-    }
-
-    public function displayAddUnitOriginWindow(array $params): void
-    {
-        echo $this->templates->render('addUnitOriginView');
+        $listOrigins = $this -> originManager -> getAll();
+        echo $this -> templates -> render('addUnitView', ['listOrigins' => constructor ::createOriginSelection($listOrigins)]);
     }
 
     public function displayDeleteView(array $params): void
     {
-        // Récupère toutes les unités pour le menu déroulant et l'unité sélectionnée
-        $units = $this->unitManager->getAll();
+        $all = $this -> unitManager -> getAll();
+        if (is_bool($all))
+        {
+            $this -> mainController -> indexWithNotification('erreur lors de l\'affichage de la page');
+            return;
+        }
+
+        $units = $all;
         $selectedUnit = null;
 
         // Vérifie si un ID d'unité est passé en paramètre pour sélectionner une unité
-        if (isset($params['unitId'])) {
-            $selectedUnit = $this->unitManager->get($params['unitId']);
+        if (isset($params['unitId']))
+        {
+            $selectedUnit = $this -> unitManager -> get($params['unitId']);
         }
 
         // Affiche la vue de suppression avec toutes les unités et l'unité sélectionnée
-        echo $this->templates->render('deleteView', [
+        echo $this -> templates -> render('deleteView', [
             'units' => $units,
             'selectedUnit' => $selectedUnit,
         ]);
@@ -100,15 +101,45 @@ class UnitController
 
     public function deleteUnit(array $params): void
     {
-        if (isset($params['confirmDelete']) && $params['confirmDelete'] === 'true' && isset($params['unitId'])) {
+        if (isset($params['confirmDelete']) && $params['confirmDelete'] === 'true' && isset($params['unitId']))
+        {
             // Supprime l'unité via le manager
-            $this->unitManager->delete($params['unitId']);
+            if ($this -> unitManager -> delete($params['unitId']))
+            {
+                $this -> mainController -> indexWithNotification('suppression effectuée !');
+                return;
+            }
+            $this -> mainController -> indexWithNotification('erreur lors de la suppression');
+        }
+    }
 
+    public function addUnit(array $params): void
+    {
+        if ($this -> unitManager -> create($params))
+        {
+            $this -> mainController -> indexWithNotification('ajout effectué !');
             return;
         }
 
-        // Si aucun paramètre de suppression valide, redirige vers la vue de suppression
-        $this->displayDeleteView($params);
+        $this -> mainController -> indexWithNotification('erreur lors de l\'ajout');
+    }
+
+    public function updateUnit(array $data): void
+    {
+        // Vérifie que `unitId` est bien défini dans les données POST
+        if (empty($data['Id']))
+        {
+            echo "Error: Unit ID is missing.";
+            return;
+        }
+
+        // Mise à jour de l'unité via le manager
+        if ($this -> unitManager -> updateUnit($data))
+        {
+            $this -> mainController -> indexWithNotification('modification enregistrée');
+            return;
+        }
+        $this -> mainController -> indexWithNotification('erreur lors de la modification');
     }
 
 }

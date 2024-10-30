@@ -2,6 +2,8 @@
 
 namespace Views;
 
+use Models\Managers\OriginManager;
+
 class constructor
 {
     public static function createAllCards($units): string
@@ -15,17 +17,26 @@ class constructor
         return $html;
     }
 
-    public static function createCard($unit): string
+    public static function createCard($unit, $originManager = new OriginManager()): string
     {
         // Utilisation des getters de l'objet `Unit` pour obtenir les propriétés
         $imageUrl = htmlspecialchars($unit->getUrlImg());
         $unitId = htmlspecialchars($unit->getId());
         $unitName = htmlspecialchars($unit->getName());
         $unitCost = htmlspecialchars($unit->getCost());
-        $unitOrigin = htmlspecialchars($unit->getOrigin());
+        $origins = $unit->getOrigins(); // Supposons que `getOrigins()` retourne un tableau d'ID d'origines
+
+        $originDropdownItems = '';
+        foreach ($origins as $originId) {
+            $origin = $originManager->get($originId); // Récupère l'objet Origin correspondant à l'ID
+            if ($origin) { // Vérifie que l'origine a été trouvée
+                $originName = htmlspecialchars($origin->getName());
+                $originDropdownItems .= '<li><span class="dropdown-item">' . $originName . '</span></li>';
+            }
+        }
 
         return '
-    <div class="col align-self-center" style="max-height: 50vw; max-width: 50vw;">
+    <div class="col align-self-center">
         <div class="card h-100 text-white shadow">
             <img class="card-img" src="' . $imageUrl . '" alt="Card image">
             <div class="card-img-overlay">
@@ -33,13 +44,25 @@ class constructor
                     <div id="carouselExample' . $unitId . '" class="carousel slide flex-fill">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <h1>' . $unitName . '</h1>
+                                <!-- Image de fond sans texte -->
                             </div>
                             <div class="carousel-item">
-                                <h1>' . $unitCost . '</h1>
-                            </div>
-                            <div class="carousel-item">
-                                <h1>' . $unitOrigin . '</h1>
+                                <div class="d-flex justify-content-between align-items-center rounded bg-success shadow p-2 mb-2">
+                                    <span class="material-symbols-outlined">id_card</span>
+                                    <span class="text-end fs-3">' . $unitName . '</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center rounded bg-warning shadow p-2 mb-2">
+                                    <span class="material-symbols-outlined">paid</span>
+                                    <span class="text-end fs-3">' . $unitCost . '</span>
+                                </div>
+                                <div class="dropdown" data-bs-theme="dark">
+                                    <button class="btn btn-secondary dropdown-toggle material-symbols-outlined" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        flag
+                                    </button>
+                                    <ul class="dropdown-menu">' .
+            $originDropdownItems .
+            '</ul>
+                                </div>
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample' . $unitId . '" data-bs-slide="prev">
@@ -72,4 +95,48 @@ class constructor
           </div>
         </div>';
     }
+
+    public static function createOriginSelection(array $origins, array $selectedOrigins = []): string
+    {
+        $html = '
+    <div class="mb-3">
+        <div class="accordion border rounded" id="accordionOrigins">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOrigins">
+                    <button class="accordion-button collapsed btn-warning text-black" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrigins" aria-expanded="false" aria-controls="collapseOrigins">
+                        Select Origins
+                    </button>
+                </h2>
+                <div id="collapseOrigins" class="accordion-collapse collapse" aria-labelledby="headingOrigins" data-bs-parent="#accordionOrigins">
+                    <div class="accordion-body">';
+
+        foreach ($origins as $origin) {
+            $id = htmlspecialchars($origin->getId());
+            $name = htmlspecialchars($origin->getName());
+            $isChecked = '';
+            foreach ($selectedOrigins as $selectedOrigin) {
+                if ($selectedOrigin->getId() === (int) $id) {
+                    $isChecked = 'checked';
+                    break;
+                }
+            }
+
+            $html .= '
+        <div class="form-check form-check-inline">
+            <input type="checkbox" class="btn-check" id="btn-check-' . $id . '" name="origins[]" value="' . $id . '" ' . $isChecked . ' autocomplete="off">
+            <label class="btn btn-outline-success mb-1" for="btn-check-' . $id . '">' . $name . '</label>
+        </div>';
+        }
+
+
+        $html .= '
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+
+        return $html;
+    }
+
 }

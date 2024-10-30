@@ -11,8 +11,8 @@ class Unit
     private ?string $id;
     private string $name;
     private int $cost;
-    private string $origin;
     private string $url_img;
+    private array $origins;
 
     /**
      * Get the ID of the unit.
@@ -29,14 +29,14 @@ class Unit
         ?string $id = null,
         string $name = '',
         int $cost = 0,
-        string $origin = '',
-        string $url_img = ''
+        string $url_img = '',
+        array $origins = []
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->cost = $cost;
-        $this->origin = $origin;
         $this->url_img = $url_img;
+        $this->origins = $origins;
     }
 
     /**
@@ -44,7 +44,7 @@ class Unit
      *
      * @param ?string $id The ID to set.
      */
-    public function setId(?string $id): void
+    public function setId(string $id = null): void
     {
         $this->id = $id;
     }
@@ -90,26 +90,6 @@ class Unit
     }
 
     /**
-     * Get the origin of the unit.
-     *
-     * @return string The origin of the unit.
-     */
-    public function getOrigin(): string
-    {
-        return $this->origin;
-    }
-
-    /**
-     * Set the origin of the unit.
-     *
-     * @param string $origin The origin to set.
-     */
-    public function setOrigin(string $origin): void
-    {
-        $this->origin = $origin;
-    }
-
-    /**
      * Get the URL of the unit's image.
      *
      * @return string The URL of the unit's image.
@@ -127,6 +107,16 @@ class Unit
     public function setUrlImg(string $url_img): void
     {
         $this->url_img = $url_img;
+    }
+
+    public function getOrigins(): array
+    {
+        return $this->origins;
+    }
+
+    public function setOrigins(array $origins): void
+    {
+        $this->origins = $origins;
     }
 
     /**

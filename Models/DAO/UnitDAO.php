@@ -16,48 +16,57 @@ class UnitDAO extends PDODAO
     /**
      * Récupère toutes les unités.
      *
-     * @return array|false Retourne un tableau d'unités ou false si aucune unité n'est trouvée.
+     * @return array|null Retourne un tableau d'unités ou null si aucune unité n'est trouvée.
      * @throws Exception Si une erreur se produit lors de l'exécution de la requête.
      */
-    public function getAll(): array|false
+    public function getAll(): ?array
     {
         $sql = "SELECT * FROM unit";
         $stmt = $this->execRequest($sql);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $units = false;
+        $units = null;
         if ($result != [])
         {
             $units = [];
             foreach ($result as $row) {
                 $unit = new Unit();
-                $unit->hydrate($row); // Utilisez la méthode hydrate pour peupler l'objet
+                $unit->hydrate($row);
+
+                // Récupération des origines associées dans `unitorigin`
+                $sqlOrigins = "SELECT id_origin FROM unitorigin WHERE id_unit = :id_unit";
+                $stmtOrigins = $this->execRequest($sqlOrigins, ['id_unit' => $unit->getId()]);
+                $origins = $stmtOrigins->fetchAll(PDO::FETCH_COLUMN);
+                // Ajout des origines à l'unité
+                $unit->setOrigins($origins);
+
                 $units[] = $unit;
             }
         }
         return $units;
     }
 
-    /**
-     * Récupère une unité par son identifiant.
-     *
-     * @param string $id L'identifiant de l'unité.
-     * @return Unit|false Retourne un Unit ou false si aucune unité n'est trouvée.
-     * @throws Exception si une erreur se produit lors de l'exécution de la requête, si l'id n'existe pas.
-     */
     public function read(string $unitId): ?Unit
     {
+        // Récupération des informations de base de l'unité dans `unit`
         $sql = "SELECT * FROM unit WHERE id = :id";
-        $stmt =  $this->execRequest($sql, ['id' => $unitId]);
-
+        $stmt = $this->execRequest($sql, ['id' => $unitId]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Vérifie si le résultat est `false`, indiquant qu'aucune unité n'a été trouvée
         if ($data === false) {
-            return null; // Aucun résultat trouvé, retourne `null`
+            return null; // Retourne null si l'unité n'est pas trouvée
         }
 
+        // Création de l'objet `Unit` et hydratation des données de base
         $unit = new Unit();
-        $unit->hydrate($data); // Hydrate l'unité avec les données trouvées
+        $unit->hydrate($data);
+
+        // Récupération des origines associées dans `unitorigin`
+        $sqlOrigins = "SELECT id_origin FROM unitorigin WHERE id_unit = :id_unit";
+        $stmtOrigins = $this->execRequest($sqlOrigins, ['id_unit' => $unitId]);
+        $origins = $stmtOrigins->fetchAll(PDO::FETCH_COLUMN);
+        // Ajout des origines à l'unité
+        $unit->setOrigins($origins);
+
         return $unit;
     }
 
@@ -76,53 +85,72 @@ class UnitDAO extends PDODAO
         return true;
     }
 
-
     public function update(Unit $unit): bool
     {
-        // Préparation de la requête SQL pour mettre à jour l'unité
-        $sql = 'UPDATE unit SET name = ?, cost = ?, origin = ?, url_img = ? WHERE id = ?';
+        $unitId = $unit->getId();
+
+        // Mise à jour des informations de l'unité dans la table `unit`
+        $sql = 'UPDATE unit SET name = ?, cost = ?, url_img = ? WHERE id = ?';
         $stmt = $this->execRequest($sql, [
             $unit->getName(),
             $unit->getCost(),
-            $unit->getOrigin(),
             $unit->getUrlImg(),
-            $unit->getId()
+            $unitId
         ]);
 
-        // Vérification de la mise à jour en lisant de nouveau l'unité dans la base de données
-        $updatedUnit = $this->read($unit->getId());
+        // Gestion des origines dans la table `unitorigin`
 
-        // Vérification que toutes les propriétés de l'unité en base de données correspondent à celles de l'unité d'origine
+        // Suppression des origines actuelles pour cette unité
+        $sqlDeleteOrigins = 'DELETE FROM unitorigin WHERE id_unit = ?';
+        $this->execRequest($sqlDeleteOrigins, [$unitId]);
+
+        // Ajout des nouvelles origines
+        foreach ($unit->getOrigins() as $originId) {
+            $sqlInsertOrigin = 'INSERT INTO unitorigin (id_unit, id_origin) VALUES (?, ?)';
+            $this->execRequest($sqlInsertOrigin, [$unitId, $originId]);
+        }
+
+        // Vérification de la mise à jour en lisant de nouveau l'unité dans la base de données
+        $updatedUnit = $this->read($unitId);
+
+        // Comparaison des propriétés mises à jour avec celles en base de données
         return (
             $updatedUnit->getName() === $unit->getName() &&
             $updatedUnit->getCost() === $unit->getCost() &&
-            $updatedUnit->getOrigin() === $unit->getOrigin() &&
-            $updatedUnit->getUrlImg() === $unit->getUrlImg()
+            $updatedUnit->getUrlImg() === $unit->getUrlImg() &&
+            $updatedUnit->getOrigins() == $unit->getOrigins()
         );
     }
 
     public function create(Unit $unit): bool
     {
         $result = false;
-        $lastEntry = $this->read($this->getLastInsertedId());
 
-        // Préparation de la requête SQL pour insérer une nouvelle unité
-        $sql = 'INSERT INTO unit (name, cost, origin, url_img) VALUES (?, ?, ?, ?)';
+        // gestion de la table unit
+        $idUnit = uniqid();
+        $sql = 'INSERT INTO unit (id, name, cost, url_img) VALUES (?, ?, ?, ?)';
 
-        // Exécution de la requête avec les valeurs de l'objet Unit
         $stmt = $this->execRequest($sql, [
+            $idUnit,
             $unit->getName(),
             $unit->getCost(),
-            $unit->getOrigin(),
             $unit->getUrlImg()
         ]);
 
-        if($this->read($this->getLastInsertedId())->getId() != $lastEntry->getId())
+        //gestion de la table unitorigin
+        $origins = $unit->getOrigins();
+
+        foreach ($origins as $origin)
+        {
+            $sql = 'INSERT INTO unitorigin (id_unit, id_origin) VALUES (?, ?)';
+            $stmt = $this->execRequest($sql, [$idUnit, $origin]);
+        }
+
+
+
+        if ($this->read($idUnit) != null)
             $result = true;
 
         return $result;
     }
-
-
-
 }

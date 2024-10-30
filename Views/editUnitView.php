@@ -40,16 +40,12 @@ $this->layout('template', ['title' => 'Edit Unit']);
                             </div>
 
                             <div class="mb-3">
-                                <label for="origin" class="form-label">Origin</label>
-                                <input type="text" class="form-control" id="origin" name="origin"
-                                       value="<?= htmlspecialchars($selectedUnit->getOrigin()) ?>" required>
-                            </div>
-
-                            <div class="mb-3">
                                 <label for="cost" class="form-label">Cost</label>
                                 <input type="number" class="form-control" id="cost" name="cost"
                                        value="<?= htmlspecialchars($selectedUnit->getCost()) ?>" min="1" max="5" required>
                             </div>
+
+                            <?= $listOrigins ?>
 
                             <div class="mb-3">
                                 <label for="url_img" class="form-label">Image URL</label>
@@ -57,9 +53,9 @@ $this->layout('template', ['title' => 'Edit Unit']);
                                        value="<?= htmlspecialchars($selectedUnit->getUrlImg()) ?>" required>
                             </div>
 
-                            <div class="d-flex justify-content-between">
-                                <button type="submit" class="btn btn-warning shadow">Confirm Edit</button>
-                                <a href="/TFT/index.php?action=home" class="btn btn-secondary shadow">Cancel</a>
+                            <div class="d-flex justify-content-evenly">
+                                <button type="submit" class="btn btn-warning text-white p-2 fs-4">Confirm Edit</button>
+                                <a href="/TFT/index.php?action=home" class="btn btn-secondary p-2 fs-4">Cancel</a>
                             </div>
                         </form>
                     <?php endif; ?>
@@ -68,3 +64,15 @@ $this->layout('template', ['title' => 'Edit Unit']);
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Vérifie si un élément est sélectionné et si le formulaire a été soumis
+        const selectedUnit = <?= isset($selectedUnit) && $selectedUnit ? 'true' : 'false' ?>;
+
+        if (selectedUnit) {
+            // Scrolle vers le bas si une unité est sélectionnée
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
+</script>

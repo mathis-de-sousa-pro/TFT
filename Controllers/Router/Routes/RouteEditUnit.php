@@ -27,7 +27,6 @@ class RouteEditUnit extends Route
 
     public function postRoute(array $params): void
     {
-        // Enregistre les modifications de l'unité sélectionnée
         $this->uc->updateUnit($params);
     }
 }

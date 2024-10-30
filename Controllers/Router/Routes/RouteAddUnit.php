@@ -22,7 +22,6 @@ class RouteAddUnit extends Route
 
     public function postRoute(array $params): void
     {
-        var_dump($params);
-        echo "unit ajouté";
+        $this->uc->addUnit($params);
     }
 }

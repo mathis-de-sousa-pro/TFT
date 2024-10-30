@@ -3,6 +3,7 @@
 namespace Controllers\Router;
 
 use Controllers\AddUnitController;
+use Controllers\OriginController;
 use Controllers\Router\Routes\RouteDelete;
 use Controllers\UnitController;
 use Controllers\MainController;
@@ -62,7 +63,8 @@ class Router
     {
         $this->ctrlList = [
             "main" => new MainController(),
-            "unit" => new UnitController()
+            "unit" => new UnitController(),
+            "origin" => new OriginController()
         ];
     }
 
@@ -78,7 +80,7 @@ class Router
         $this->routeList = [
             "home" => new RouteHome($this->ctrlList["main"]),
             "add-unit" => new RouteAddUnit($this->ctrlList["unit"]),
-            "add-unit-origin" => new RouteAddUnitOrigin($this->ctrlList["unit"]),
+            "add-unit-origin" => new RouteAddUnitOrigin($this->ctrlList["origin"]),
             "edit-unit" => new RouteEditUnit($this->ctrlList["unit"]),
             "search" => new RouteSearch($this->ctrlList["unit"]),
             "delete-unit" => new RouteDelete($this->ctrlList["unit"]) // Modifier ici

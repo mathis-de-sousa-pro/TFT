@@ -22,14 +22,24 @@ class MainController
 
     public function index(): void
     {
-        $units = $this->unitManager->getAll();
+        $all = $this->unitManager->getAll();
+        if (is_bool($all)){
+            $this-> indexWithNotification('erreur lors de l\'affichage de la page');
+            return;}
+
+        $units = $all;
         $cardsHtml = constructor::createAllCards($units);
         echo $this->templates->render('home', ['cardsHtml' => $cardsHtml, 'message' => '']);
     }
 
     public function indexWithNotification(string $text): void
     {
-        $units = $this->unitManager->getAll();
+        $all = $this->unitManager->getAll();
+        if (is_bool($all)){
+            $this-> indexWithNotification('erreur lors de l\'affichage de la page');
+            return;}
+
+        $units = $all;
         $cardsHtml = constructor::createAllCards($units);
         echo $this->templates->render('home', [
             'cardsHtml' => $cardsHtml,

@@ -16,30 +16,20 @@ class UnitManager
         $this->unitDAO = new UnitDAO();
     }
 
-    public function getAll(): array
+    public function getAll(): array|false
     {
-        try
-        {
-            return $this -> unitDAO -> getAll();
-        }
-        catch ( Exception $e )
-        {
-            echo "Erreur lors de la récupération des units \n" . $e -> getMessage();
-            return array();
-        }
+        $all = $this->unitDAO->getAll();
+        if ($all == null)
+            return false;
+        return $all;
     }
 
-    public function get(int $id): Unit|false
+    public function get(string $id): Unit|false
     {
-        try
-        {
-            return $this->unitDAO->read($id);
-        }
-        catch (Exception $e)
-        {
-            echo "Erreur lors de la récupération du unit" . PHP_EOL . $e->getMessage();
+        $unit = $this->unitDAO->read($id);
+        if (!$unit)
             return false;
-        }
+        return $unit;
     }
 
     public function updateUnit(array $params): bool
@@ -49,8 +39,21 @@ class UnitManager
         return $this->unitDAO->update($unit);
     }
 
-    public function delete(int $id)
+    public function delete(string $id): bool
     {
-        $this->unitDAO->delete((string)$id);
+        return $this->unitDAO->delete($id);
+    }
+
+    public function create(array $params): bool
+    {
+        //gestion du cas ou l'url de l'image du unit n'est pas renseigné
+        if ((!isset($params["url_img"])) || ($params["url_img"] == '')) {
+            $params["url_img"] = 'https://media.istockphoto.com/id/1055079680/vector/black-linear-photo-camera-like-no-image-available.jpg?s=612x612&w=0&k=20&c=P1DebpeMIAtXj_ZbVsKVvg-duuL0v9DlrOZUvPG6UJk=';
+        }
+
+        $unit = new Unit();
+        $unit->hydrate($params);
+
+        return $this->unitDAO->create($unit);
     }
 }
