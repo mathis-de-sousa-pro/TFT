@@ -7,7 +7,7 @@ $this->layout('template', ['title' => 'Edit Origin']);
         <!-- Colonne de gauche : Sélection de l'origine et formulaire de modification -->
         <div class="col">
             <div class="card shadow-lg">
-                <div class="card-header bg-info text-white">
+                <div class="card-header bg-warning text-white">
                     <h2 class="card-title text-center m-0">Edit Origin</h2>
                 </div>
                 <div class="card-body">
@@ -46,7 +46,7 @@ $this->layout('template', ['title' => 'Edit Origin']);
                             </div>
 
                             <div class="d-flex justify-content-evenly">
-                                <button type="submit" class="btn btn-info text-white p-2 fs-4">Confirm Edit</button>
+                                <button type="submit" class="btn btn-warning text-white p-2 fs-4">Confirm Edit</button>
                                 <a href="/TFT/index.php?action=home" class="btn btn-secondary p-2 fs-4">Cancel</a>
                             </div>
                         </form>
