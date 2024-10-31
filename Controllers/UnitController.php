@@ -31,7 +31,6 @@ class UnitController
             return;
         }
 
-        $units = $all;
         $selectedUnit = null;
         $selectedUnitOrigins = [];
         $origins = [];
@@ -47,13 +46,13 @@ class UnitController
 
 
         echo $this -> templates -> render('editUnitView', [
-            'units' => $units,
+            'units' => $all,
             'selectedUnit' => $selectedUnit,
             'listOrigins' => constructor::createOriginSelection($origins, $selectedUnitOrigins)
         ]);
     }
 
-    public function displaySearchView(): void
+    public function displaySearchUnitView(): void
     {
         // Utilise la réflexion pour obtenir les noms des propriétés de la classe Unit
         $reflectionClass = new \ReflectionClass('Models\\Unit');
@@ -65,7 +64,7 @@ class UnitController
         }
 
         // Transmet les propriétés à la vue
-        echo $this -> templates -> render('searchView', ['unitProperties' => $unitProperties]);
+        echo $this -> templates -> render('searchUnitView', ['unitProperties' => $unitProperties]);
     }
 
     public function displayAddUnitWindow(): void
@@ -74,7 +73,7 @@ class UnitController
         echo $this -> templates -> render('addUnitView', ['listOrigins' => constructor ::createOriginSelection($listOrigins)]);
     }
 
-    public function displayDeleteView(array $params): void
+    public function displayDeleteUnitView(array $params): void
     {
         $all = $this -> unitManager -> getAll();
         if (is_bool($all))
@@ -93,9 +92,17 @@ class UnitController
         }
 
         // Affiche la vue de suppression avec toutes les unités et l'unité sélectionnée
-        echo $this -> templates -> render('deleteView', [
+        echo $this -> templates -> render('deleteUnitView', [
             'units' => $units,
             'selectedUnit' => $selectedUnit,
+        ]);
+    }
+
+    public function displaySearchUnitResults(array $units): void
+    {
+        echo $this->templates->render('searchUnitView', [
+            'tabUnits' => constructor::createAllSearchedUnitCards($units),
+            'searched' => true
         ]);
     }
 
@@ -103,7 +110,6 @@ class UnitController
     {
         if (isset($params['confirmDelete']) && $params['confirmDelete'] === 'true' && isset($params['unitId']))
         {
-            // Supprime l'unité via le manager
             if ($this -> unitManager -> delete($params['unitId']))
             {
                 $this -> mainController -> indexWithNotification('suppression effectuée !');
@@ -134,7 +140,7 @@ class UnitController
         }
 
         // Mise à jour de l'unité via le manager
-        if ($this -> unitManager -> updateUnit($data))
+        if ($this -> unitManager -> update($data))
         {
             $this -> mainController -> indexWithNotification('modification enregistrée');
             return;
@@ -142,4 +148,9 @@ class UnitController
         $this -> mainController -> indexWithNotification('erreur lors de la modification');
     }
 
+    public function search(string $searchField, string $searchTerm): array
+    {
+        // Appel du manager pour rechercher des unités en fonction du champ et du terme
+        return $this->unitManager->searchByField($searchField, $searchTerm);
+    }
 }

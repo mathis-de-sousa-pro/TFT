@@ -4,14 +4,17 @@ namespace Controllers\Router;
 
 use Controllers\AddUnitController;
 use Controllers\OriginController;
-use Controllers\Router\Routes\RouteDelete;
+use Controllers\Router\Routes\RouteDeleteOrigin;
+use Controllers\Router\Routes\RouteDeleteUnit;
+use Controllers\Router\Routes\RouteEditOrigin;
+use Controllers\Router\Routes\RouteSearchOrigin;
 use Controllers\UnitController;
 use Controllers\MainController;
 use Controllers\Router\Routes\RouteAddUnit;
 use Controllers\Router\Routes\RouteAddUnitOrigin;
 use Controllers\Router\Routes\RouteEditUnit;
 use Controllers\Router\Routes\RouteHome;
-use Controllers\Router\Routes\RouteSearch;
+use Controllers\Router\Routes\RouteSearchUnit;
 use Controllers\SearchController;
 
 /**
@@ -78,12 +81,21 @@ class Router
     private function createRouteList(): void
     {
         $this->routeList = [
+            //main
             "home" => new RouteHome($this->ctrlList["main"]),
+
+            //unit
             "add-unit" => new RouteAddUnit($this->ctrlList["unit"]),
-            "add-unit-origin" => new RouteAddUnitOrigin($this->ctrlList["origin"]),
             "edit-unit" => new RouteEditUnit($this->ctrlList["unit"]),
-            "search" => new RouteSearch($this->ctrlList["unit"]),
-            "delete-unit" => new RouteDelete($this->ctrlList["unit"]) // Modifier ici
+            "delete-unit" => new RouteDeleteUnit($this->ctrlList["unit"]),
+            "search-unit" => new RouteSearchUnit($this->ctrlList["unit"]),
+
+            //origin
+            "add-origin" => new RouteAddUnitOrigin($this->ctrlList["origin"]),
+            "edit-origin" => new RouteEditOrigin($this->ctrlList["origin"]),
+            "delete-origin" => new RouteDeleteOrigin($this->ctrlList["origin"]),
+            "search-origin" => new RouteSearchOrigin($this->ctrlList["origin"])
+
             ];
     }
 

@@ -50,4 +50,22 @@ class OriginManager
             return false;
         return $origin;
     }
+
+    public function update($data): bool
+    {
+        $origin = new Origin();
+        $origin->hydrate($data);
+        return $this->originDAO->update($origin);
+    }
+
+    public function delete(mixed $originId): bool
+    {
+        return $this->originDAO->delete($originId);
+    }
+
+    public function searchByField(string $searchField, string $searchTerm): array
+    {
+        return $this->originDAO->search($searchField, $searchTerm);
+    }
+
 }

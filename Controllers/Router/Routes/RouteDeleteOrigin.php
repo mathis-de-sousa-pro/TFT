@@ -3,33 +3,31 @@
 namespace Controllers\Router\Routes;
 
 use Controllers\MainController;
+use Controllers\OriginController;
 use Controllers\Router\Route;
 use Controllers\UnitController;
 use Models\Unit;
 
-class RouteDelete extends Route
+class RouteDeleteOrigin extends Route
 {
-    private UnitController $uc;
-    private MainController $mc;
-    public function __construct(UnitController $uc)
+    private OriginController $oc;
+    public function __construct(OriginController $oc)
     {
-        $this->uc = $uc;
-        $this->mc = new MainController();
+        $this->oc = $oc;
     }
 
     public function getRoute(array $params): void
     {
         // Vérifie la présence de `confirmDelete` pour déclencher la suppression
         if (isset($params['confirmDelete']) && $params['confirmDelete'] === 'true') {
-            $this->uc->deleteUnit($params);
+            $this->oc->deleteOrigin($params);
         } else {
-            $this->uc->displayDeleteView($params);
+            $this->oc->displayDeleteOriginView($params);
         }
     }
 
     public function postRoute(array $params): void
     {
-        $this->uc->deleteUnit($params);
-        $this->mc->index();
+        $this->oc->deleteOrigin($params);
     }
 }

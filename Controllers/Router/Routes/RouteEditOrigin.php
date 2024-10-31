@@ -2,31 +2,32 @@
 
 namespace Controllers\Router\Routes;
 
+use Controllers\OriginController;
 use Controllers\UnitController;
 use Controllers\Router\Route;
 
-class RouteEditUnit extends Route
+class RouteEditOrigin extends Route
 {
-    private UnitController $uc;
+    private OriginController $oc;
 
-    public function __construct(UnitController $oc)
+    public function __construct(OriginController $oc)
     {
-        $this->uc = $oc;
+        $this->oc = $oc;
     }
 
     public function getRoute(array $params): void
     {
         // Si un ID d'unité est fourni, affiche le formulaire pré-rempli
-        if (isset($params['unitId'])) {
-            $this->uc->displayEditUnitWindow($params['unitId']);
+        if (isset($params['originId'])) {
+            $this->oc->displayEditUnitWindow($params['originId']);
         } else {
             // Si aucun `unitId` n'est défini, affiche le formulaire vide avec la liste de sélection
-            $this->uc->displayEditUnitWindow();
+            $this->oc->displayEditUnitWindow();
         }
     }
 
     public function postRoute(array $params): void
     {
-        $this->uc->updateUnit($params);
+        $this->oc->updateOrigin($params);
     }
 }

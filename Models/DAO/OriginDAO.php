@@ -136,6 +136,22 @@ class OriginDAO extends PDODAO
         return $origins;
     }
 
+    public function search(string $searchField, string $searchTerm): array
+    {
+        // Requête pour rechercher dans le champ spécifié
+        $sql = "SELECT * FROM origin WHERE $searchField LIKE :term";
+        $stmt = $this->execRequest($sql, ['term' => '%' . $searchTerm . '%']);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $origins = [];
+        foreach ($results as $data) {
+            $origin = new Origin();
+            $origin->hydrate($data);
+            $origins[]  = $origin;
+        }
+
+        return $origins;
+    }
 
 
 }

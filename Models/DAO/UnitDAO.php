@@ -153,4 +153,21 @@ class UnitDAO extends PDODAO
 
         return $result;
     }
+
+    public function search(string $field, string $term): array
+    {
+        // Requête pour rechercher dans le champ spécifié
+        $sql = "SELECT * FROM unit WHERE $field LIKE :term";
+        $stmt = $this->execRequest($sql, ['term' => '%' . $term . '%']);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $units = [];
+        foreach ($results as $data) {
+            $unit = new Unit();
+            $unit->hydrate($data);
+            $units[] = $unit;
+        }
+
+        return $units;
+    }
 }
