@@ -3,10 +3,21 @@
 namespace Views;
 
 use Models\Managers\OriginManager;
+use Models\Unit;
 
 class constructor
 {
-    public static function createAllCards($units): string
+    public static function createAllSearchedCards(array $units): string
+    {
+        $html = '<div class="row row-cols-1 row-cols-xl-3 row-cols-xxl-5 row-cols-md-2 g-5 m-3">';
+        foreach ( $units as $unit )
+        {
+            $html .= self::createSearchedCard($unit);
+        }
+        $html .= '</div>';
+        return $html;
+    }
+    public static function createAllCards(array $units): string
     {
         $html = '<div class="row row-cols-1 row-cols-xl-3 row-cols-xxl-5 row-cols-md-2 g-5 m-3">';
         foreach ( $units as $unit )
@@ -17,19 +28,18 @@ class constructor
         return $html;
     }
 
-    public static function createCard($unit, $originManager = new OriginManager()): string
+    public static function createCard(Unit $unit, OriginManager $originManager = new OriginManager()): string
     {
-        // Utilisation des getters de l'objet `Unit` pour obtenir les propriétés
         $imageUrl = htmlspecialchars($unit->getUrlImg());
         $unitId = htmlspecialchars($unit->getId());
         $unitName = htmlspecialchars($unit->getName());
         $unitCost = htmlspecialchars($unit->getCost());
-        $origins = $unit->getOrigins(); // Supposons que `getOrigins()` retourne un tableau d'ID d'origines
+        $origins = $unit->getOrigins();
 
         $originDropdownItems = '';
         foreach ($origins as $originId) {
-            $origin = $originManager->get($originId); // Récupère l'objet Origin correspondant à l'ID
-            if ($origin) { // Vérifie que l'origine a été trouvée
+            $origin = $originManager->get($originId);
+            if ($origin) {
                 $originName = htmlspecialchars($origin->getName());
                 $originDropdownItems .= '<li><span class="dropdown-item">' . $originName . '</span></li>';
             }
@@ -78,6 +88,58 @@ class constructor
             </div>
         </div>
     </div>';
+    }
+
+    public static function createSearchedCard(Unit $unit): string
+    {
+        // Utilisation des getters de l'objet `Unit` pour obtenir les propriétés
+        $imageUrl = htmlspecialchars($unit->getUrlImg());
+        $unitId = htmlspecialchars($unit->getId());
+        $unitName = htmlspecialchars($unit->getName());
+        $unitCost = htmlspecialchars($unit->getCost());
+
+        return '
+    <div class="col align-self-center">
+        <div class="card h-100 text-white shadow">
+            <img class="card-img" src="' . $imageUrl . '" alt="Card image">
+            <div class="card-img-overlay">
+                <div class="card-text text-center d-flex align-items-center" style="height: 100%">
+                    <div id="carouselExample' . $unitId . '" class="carousel slide flex-fill">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <!-- Image de fond sans texte -->
+                            </div>
+                            <div class="carousel-item">
+                                <div class="d-flex justify-content-between align-items-center rounded bg-success shadow p-2 mb-2">
+                                    <span class="material-symbols-outlined">id_card</span>
+                                    <span class="text-end fs-3">' . $unitName . '</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center rounded bg-warning shadow p-2 mb-2">
+                                    <span class="material-symbols-outlined">paid</span>
+                                    <span class="text-end fs-3">' . $unitCost . '</span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-evenly rounded p-2 mb-2">
+                                    <a class="material-symbols-outlined btn btn-warning" href="/TFT/index.php?action=edit-unit&unitId=' . $unitId . '">edit</a>
+                                    <a class="material-symbols-outlined btn btn-danger" href="/TFT/index.php?action=delete-unit&unitId=' . $unitId . '">delete_forever</a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample' . $unitId . '" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample' . $unitId . '" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+
     }
 
     public static function createMessageNotification(string $text): string

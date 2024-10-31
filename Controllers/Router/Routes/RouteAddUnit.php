@@ -10,9 +10,9 @@ class RouteAddUnit extends Route
 
     private UnitController $uc;
 
-    public function __construct(UnitController $uc)
+    public function __construct(UnitController $oc)
     {
-        $this->uc = $uc;
+        $this->uc = $oc;
     }
 
     public function getRoute(array $params): void

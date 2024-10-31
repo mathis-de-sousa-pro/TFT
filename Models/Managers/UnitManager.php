@@ -32,7 +32,7 @@ class UnitManager
         return $unit;
     }
 
-    public function updateUnit(array $params): bool
+    public function update(array $params): bool
     {
         $unit = new Unit();
         $unit->hydrate($params);
@@ -55,5 +55,10 @@ class UnitManager
         $unit->hydrate($params);
 
         return $this->unitDAO->create($unit);
+    }
+
+    public function searchByField(string $field, string $term): array
+    {
+        return $this->unitDAO->search($field, $term);
     }
 }
