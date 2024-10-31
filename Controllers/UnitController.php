@@ -170,10 +170,10 @@ class UnitController
     {
         if (isset($params['confirmDelete']) && $params['confirmDelete'] === 'true' && isset($params['unitId'])) {
             if ($this->unitManager->delete($params['unitId'])) {
-                $this->mainController->indexWithNotification('suppression effectuée !');
+                $this->mainController->indexWithNotification('Suppression effectuée !');
                 return;
             }
-            $this->mainController->indexWithNotification('erreur lors de la suppression');
+            $this->mainController->indexWithNotification('Erreur lors de la suppression !');
         }
     }
 
@@ -188,11 +188,11 @@ class UnitController
     public function addUnit(array $params): void
     {
         if ($this->unitManager->create($params)) {
-            $this->mainController->indexWithNotification('ajout effectué !');
+            $this->mainController->indexWithNotification('Ajout effectué !');
             return;
         }
 
-        $this->mainController->indexWithNotification('erreur lors de l\'ajout');
+        $this->mainController->indexWithNotification('Erreur lors de l\'ajout !');
     }
 
     /**
@@ -211,10 +211,10 @@ class UnitController
         }
 
         if ($this->unitManager->update($data)) {
-            $this->mainController->indexWithNotification('modification enregistrée');
+            $this->mainController->indexWithNotification('Modification enregistrée !');
             return;
         }
-        $this->mainController->indexWithNotification('erreur lors de la modification');
+        $this->mainController->indexWithNotification('Erreur lors de la modification du unit !');
     }
 
     /**

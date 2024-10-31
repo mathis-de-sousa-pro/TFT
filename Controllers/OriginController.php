@@ -66,7 +66,7 @@ class OriginController
     {
         $all = $this->originManager->getAll();
         if (is_bool($all)) {
-            $this->mainController->indexWithNotification('erreur lors de l\'affichage de la page');
+            $this->mainController->indexWithNotification('Erreur lors de l\'affichage de la page');
             return;
         }
 
@@ -93,7 +93,7 @@ class OriginController
     {
         $origins = $this->originManager->getAll();
         if (is_bool($origins)) {
-            $this->mainController->indexWithNotification('erreur lors de l\'affichage de la page');
+            $this->mainController->indexWithNotification('Erreur lors de l\'affichage de la page');
             return;
         }
 
@@ -152,11 +152,11 @@ class OriginController
     public function addOrigin(array $params): void
     {
         if ($this->originManager->create($params)) {
-            $this->mainController->indexWithNotification('ajout de l\'origine effectué !');
+            $this->mainController->indexWithNotification('Ajout de l\'origine effectué !');
             return;
         }
 
-        $this->mainController->indexWithNotification('erreur lors de l\'ajout de l\'origine');
+        $this->mainController->indexWithNotification('Erreur lors de l\'ajout de l\'origine !');
     }
 
     /**
@@ -170,11 +170,11 @@ class OriginController
     public function updateOrigin(array $params): void
     {
         if ($this->originManager->update($params)) {
-            $this->mainController->indexWithNotification('modification enregistrée');
+            $this->mainController->indexWithNotification('Modification enregistrée !');
             return;
         }
 
-        $this->mainController->indexWithNotification('erreur lors de la modification');
+        $this->mainController->indexWithNotification('Erreur lors de la modification !');
     }
 
     /**
@@ -189,10 +189,10 @@ class OriginController
     {
         if (isset($params['confirmDelete']) && $params['confirmDelete'] === 'true' && isset($params['originId'])) {
             if ($this->originManager->delete($params['originId'])) {
-                $this->mainController->indexWithNotification('suppression effectuée !');
+                $this->mainController->indexWithNotification('Suppression effectuée !');
                 return;
             }
-            $this->mainController->indexWithNotification('erreur lors de la suppression');
+            $this->mainController->indexWithNotification('Erreur lors de la suppression !');
         }
     }
 
