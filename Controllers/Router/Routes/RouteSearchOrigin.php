@@ -2,22 +2,22 @@
 
 namespace Controllers\Router\Routes;
 
+use Controllers\OriginController;
 use Controllers\Router\Route;
-use Controllers\UnitController;
 
-class RouteSearchUnit extends Route
+class RouteSearchOrigin extends Route
 {
 
-    private UnitController $uc;
+    private OriginController $oc;
 
-    public function __construct(UnitController $oc)
+    public function __construct(OriginController $oc)
     {
-        $this->uc = $oc;
+        $this->oc = $oc;
     }
 
     public function getRoute(array $params): void
     {
-        $this->uc->displaySearchUnitView();
+        $this->oc->displaySearchOriginView();
     }
 
     public function postRoute(array $params): void
@@ -28,10 +28,10 @@ class RouteSearchUnit extends Route
             $searchField = htmlspecialchars($params['searchField']);
 
             // Appel du contrôleur pour récupérer les résultats de la recherche
-            $results = $this->uc->search($searchField, $searchTerm);
+            $results = $this->oc->search($searchField, $searchTerm);
 
             // Rendu de la vue avec les résultats de recherche
-            $this->uc->displaySearchUnitResults($results);
+            $this->oc->displaySearchOriginResults($results);
         } else {
             echo "Paramètres de recherche manquants.";
         }

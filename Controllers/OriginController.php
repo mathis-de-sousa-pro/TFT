@@ -5,6 +5,7 @@ namespace Controllers;
 use League\Plates\Engine;
 use Models\Managers\OriginManager;
 use Models\Managers\UnitManager;
+use Views\constructor;
 
 class OriginController
 {
@@ -47,21 +48,43 @@ class OriginController
     public function displayDeleteOriginView(array $params): void
     {
         $origins = $this->originManager->getAll();
-        $selectedOrigin = null;
 
         if (is_bool($origins)){
             $this->mainController->indexWithNotification('erreur lors de l\'affichage de la page');
             return;
         }
 
+        $selectedOrigin = null;
 
         if (isset($params['originId']))
-            $selectedUnit = $this->originManager->get($params['originId']);
+            $selectedOrigin = $this->originManager->get($params['originId']);
 
         echo $this -> templates -> render('deleteOriginView', [
             'origins' => $origins,
             'selectedOrigin' => $selectedOrigin,
         ]);
+    }
+
+    public function displaySearchOriginResults(array $origins): void
+    {
+        echo $this->templates->render('searchOriginView', [
+            'tabOrigins' => constructor::createAllSearchedOriginCards($origins),
+            'searched' => true
+        ]);
+    }
+
+    public function displaySearchOriginView(): void
+    {
+        $reflectionClass = new \ReflectionClass('Models\\Origin');
+        $originProperties = [];
+
+        foreach ($reflectionClass -> getProperties() as $property)
+        {
+            $originProperties[] = $property -> getName();
+        }
+
+        // Transmet les propriétés à la vue
+        echo $this -> templates -> render('searchOriginView', ['originProperties' => $originProperties]);
     }
 
     public function addOrigin(array $params): void
@@ -78,14 +101,8 @@ class OriginController
 
     public function updateOrigin(array $params): void
     {
-        if (empty($data['Id']))
-        {
-            echo "Error: Origin ID is missing.";
-            return;
-        }
-
         // Mise à jour de l'unité via le manager
-        if ($this -> originManager -> update($data))
+        if ($this -> originManager -> update($params))
         {
             $this -> mainController -> indexWithNotification('modification enregistrée');
             return;
@@ -105,4 +122,10 @@ class OriginController
             $this -> mainController -> indexWithNotification('erreur lors de la suppression');
         }
     }
+
+    public function search(string $searchField, string $searchTerm): array
+    {
+        return $this->originManager->searchByField($searchField, $searchTerm);
+    }
+
 }

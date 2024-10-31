@@ -47,7 +47,7 @@
             <?php if (isset($selectedUnit) && $selectedUnit): ?>
                 <div class="col-md-6">
                     <div>
-                        <?= \Views\constructor::createCard($selectedUnit) ?>
+                        <?= \Views\constructor::createUnitCard($selectedUnit) ?>
                     </div>
                 </div>
             <?php endif; ?>

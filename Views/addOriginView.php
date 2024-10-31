@@ -16,7 +16,7 @@ $this->layout('template', ['title' => 'Add Origin']);
 
                 <div class="mb-3">
                     <label for="url_img" class="form-label">Origin Url image</label>
-                    <input class="form-control border-success-emphasis" id="url_img" name="url_img" placeholder="Enter image url" required>
+                    <input class="form-control border-success-emphasis" id="url_img" name="url_img" placeholder="Enter image url">
                 </div>
 
                 <div class="my-3 d-flex justify-content-evenly">

@@ -161,7 +161,6 @@ class UnitDAO extends PDODAO
         $stmt = $this->execRequest($sql, ['term' => '%' . $term . '%']);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Hydratation des résultats en objets Unit
         $units = [];
         foreach ($results as $data) {
             $unit = new Unit();

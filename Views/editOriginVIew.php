@@ -42,7 +42,7 @@ $this->layout('template', ['title' => 'Edit Origin']);
                             <div class="mb-3">
                                 <label for="url_img" class="form-label">Image URL</label>
                                 <input type="text" class="form-control" id="url_img" name="url_img"
-                                       value="<?= htmlspecialchars($selectedOrigin->getUrlImg()) ?>" required>
+                                       value="<?= htmlspecialchars($selectedOrigin->getUrlImg()) ?>">
                             </div>
 
                             <div class="d-flex justify-content-evenly">

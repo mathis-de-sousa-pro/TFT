@@ -28,7 +28,6 @@ class RouteEditOrigin extends Route
 
     public function postRoute(array $params): void
     {
-        var_dump($params);
         $this->oc->updateOrigin($params);
     }
 }

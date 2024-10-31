@@ -7,6 +7,7 @@ use Controllers\OriginController;
 use Controllers\Router\Routes\RouteDeleteOrigin;
 use Controllers\Router\Routes\RouteDeleteUnit;
 use Controllers\Router\Routes\RouteEditOrigin;
+use Controllers\Router\Routes\RouteSearchOrigin;
 use Controllers\UnitController;
 use Controllers\MainController;
 use Controllers\Router\Routes\RouteAddUnit;
@@ -82,17 +83,18 @@ class Router
         $this->routeList = [
             //main
             "home" => new RouteHome($this->ctrlList["main"]),
-            "search-unit" => new RouteSearchUnit($this->ctrlList["unit"]),
 
             //unit
             "add-unit" => new RouteAddUnit($this->ctrlList["unit"]),
             "edit-unit" => new RouteEditUnit($this->ctrlList["unit"]),
             "delete-unit" => new RouteDeleteUnit($this->ctrlList["unit"]),
+            "search-unit" => new RouteSearchUnit($this->ctrlList["unit"]),
 
             //origin
             "add-origin" => new RouteAddUnitOrigin($this->ctrlList["origin"]),
             "edit-origin" => new RouteEditOrigin($this->ctrlList["origin"]),
             "delete-origin" => new RouteDeleteOrigin($this->ctrlList["origin"]),
+            "search-origin" => new RouteSearchOrigin($this->ctrlList["origin"])
 
             ];
     }

@@ -28,7 +28,7 @@ class MainController
             return;}
 
         $units = $all;
-        $cardsHtml = constructor::createAllCards($units);
+        $cardsHtml = constructor::createAllUnitCards($units);
         echo $this->templates->render('home', ['cardsHtml' => $cardsHtml, 'message' => '']);
     }
 
@@ -40,7 +40,7 @@ class MainController
             return;}
 
         $units = $all;
-        $cardsHtml = constructor::createAllCards($units);
+        $cardsHtml = constructor::createAllUnitCards($units);
         echo $this->templates->render('home', [
             'cardsHtml' => $cardsHtml,
             'notificationHtml' => constructor::createMessageNotification($text) // Passe le toast à la vue

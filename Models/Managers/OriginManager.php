@@ -63,4 +63,9 @@ class OriginManager
         return $this->originDAO->delete($originId);
     }
 
+    public function searchByField(string $searchField, string $searchTerm): array
+    {
+        return $this->originDAO->search($searchField, $searchTerm);
+    }
+
 }

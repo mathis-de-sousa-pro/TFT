@@ -101,7 +101,7 @@ class UnitController
     public function displaySearchUnitResults(array $units): void
     {
         echo $this->templates->render('searchUnitView', [
-            'tabUnits' => constructor::createAllSearchedCards($units),
+            'tabUnits' => constructor::createAllSearchedUnitCards($units),
             'searched' => true
         ]);
     }
