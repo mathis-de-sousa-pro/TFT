@@ -2,7 +2,6 @@
 
 namespace Controllers\Router;
 
-use Controllers\AddUnitController;
 use Controllers\OriginController;
 use Controllers\Router\Routes\RouteDeleteOrigin;
 use Controllers\Router\Routes\RouteDeleteUnit;
@@ -15,50 +14,48 @@ use Controllers\Router\Routes\RouteAddUnitOrigin;
 use Controllers\Router\Routes\RouteEditUnit;
 use Controllers\Router\Routes\RouteHome;
 use Controllers\Router\Routes\RouteSearchUnit;
-use Controllers\SearchController;
 
 /**
- * Class Router
+ * Classe Router
  *
- * This class handles the routing logic for the application.
- *
+ * Cette classe gère la logique de routage pour l'application.
  */
 class Router
 {
-
     /**
-     * @var array $routeList List of routes.
+     * @var array $routeList
+     * Liste des routes.
      */
     private array $routeList;
 
     /**
-     * @var array $ctrlList List of controllers.
+     * @var array $ctrlList
+     * Liste des contrôleurs.
      */
     private array $ctrlList;
 
     /**
-     * @var string $action_key The key for the current action.
+     * @var string $action_key
+     * Clé pour l'action en cours.
      */
     private string $action_key;
 
     /**
-     * Constructor
+     * Constructeur
      *
-     * Initializes the router with a default action key.
+     * Initialise le routeur avec une clé d'action par défaut.
      *
-     * @param string $nameOfAction The name of the action key (default is "action").
-     * @return void
      */
-    public function __construct(string $nameOfAction = "action")
+    public function __construct()
     {
         $this->createControllerList();
         $this->createRouteList();
     }
 
     /**
-     * Create a Controller in the list
+     * Crée la liste des contrôleurs.
      *
-     * Initializes the list of controllers.
+     * Initialise la liste des contrôleurs.
      *
      * @return void
      */
@@ -72,77 +69,58 @@ class Router
     }
 
     /**
-     * Create a route in the list
+     * Crée la liste des routes.
      *
-     * Initializes the list of routes.
+     * Initialise la liste des routes.
      *
      * @return void
      */
     private function createRouteList(): void
     {
         $this->routeList = [
-            //main
+            // main
             "home" => new RouteHome($this->ctrlList["main"]),
 
-            //unit
+            // unit
             "add-unit" => new RouteAddUnit($this->ctrlList["unit"]),
             "edit-unit" => new RouteEditUnit($this->ctrlList["unit"]),
             "delete-unit" => new RouteDeleteUnit($this->ctrlList["unit"]),
             "search-unit" => new RouteSearchUnit($this->ctrlList["unit"]),
 
-            //origin
+            // origin
             "add-origin" => new RouteAddUnitOrigin($this->ctrlList["origin"]),
             "edit-origin" => new RouteEditOrigin($this->ctrlList["origin"]),
             "delete-origin" => new RouteDeleteOrigin($this->ctrlList["origin"]),
             "search-origin" => new RouteSearchOrigin($this->ctrlList["origin"])
-
-            ];
+        ];
     }
 
     /**
-     * Determines the route to call by $_GET or $_POST
+     * Détermine la route à appeler via $_GET ou $_POST.
      *
-     * Routes the request to the appropriate handler based on the HTTP method.
+     * Route la requête vers le gestionnaire approprié en fonction de la méthode HTTP.
      *
-     * @param array $get The $_GET method parameters.
-     * @param array $post The $_POST method parameters.
+     * @param array $get
+     * Les paramètres de la méthode $_GET.
+     * @param array $post
+     * Les paramètres de la méthode $_POST.
+     *
      * @return void
      */
     public function routing(array $get, array $post): void
     {
-        if ($_SERVER["REQUEST_METHOD"] == 'GET')
-        {
-            if (isset($get["action"]))
-            {
+        if ($_SERVER["REQUEST_METHOD"] == 'GET') {
+            if (isset($get["action"])) {
                 $this->action_key = $get["action"];
                 $this->routeList[$this->action_key]->getRoute($get);
-            }
-            else
-            {
+            } else {
                 $this->routeList["home"]->getRoute($get);
             }
-        }
-        else
-        {
-            if (isset($get["action"]))
-            {
+        } else {
+            if (isset($get["action"])) {
                 $this->action_key = $get["action"];
                 $this->routeList[$this->action_key]->postRoute($post);
             }
         }
-    }
-
-    /**
-     * Get the action key
-     *
-     * Returns the action key.
-     *
-     * @return string The action key.
-     * @access public
-     * @return string
-     */
-    public function getActionKey(): string
-    {
-        return $this->action_key;
     }
 }

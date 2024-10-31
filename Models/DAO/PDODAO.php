@@ -9,51 +9,50 @@ use PDOException;
 use PDOStatement;
 
 /**
- * Abstract class PDODAO
+ * Classe abstraite PDODAO
  *
- * Provides a base class for Data Access Objects (DAO) using PDO for database interactions.
+ * Fournit une base pour les objets d'accès aux données (DAO) utilisant PDO pour les interactions avec la base de données.
  */
 abstract class PDODAO
 {
+    /**
+     * @var ?PDO $db
+     * Instance de connexion à la base de données.
+     */
     private ?PDO $db = null;
 
     /**
-     * Retrieves the PDO database connection.
+     * Récupère la connexion PDO à la base de données.
      *
-     * @return PDO The PDO instance for database connection.
-     * @throws Exception If the database connection cannot be established.
+     * @return PDO L'instance PDO de la connexion à la base de données.
+     * @throws Exception Si la connexion à la base de données ne peut être établie.
      */
     private function getDB(): PDO
     {
-        if ($this->db == null)
-        {
+        if ($this->db === null) {
             $dbConfig = Config::getDBConfig();
-
             $this->db = new PDO($dbConfig['dsn'], $dbConfig['user'], $dbConfig['pass']);
         }
         return $this->db;
     }
 
     /**
-     * Executes a SQL request with optional parameters.
+     * Exécute une requête SQL avec des paramètres optionnels.
      *
-     * @param string $sql The SQL query to execute.
-     * @param array|null $params Optional parameters for the SQL query.
-     * @return PDOStatement|false The result of the query execution.
+     * @param string $sql La requête SQL à exécuter.
+     * @param array|null $params Les paramètres optionnels pour la requête SQL.
+     * @return PDOStatement|false Le résultat de l'exécution de la requête ou false en cas d'échec.
      * @throws Exception
      */
     protected function execRequest(string $sql, array $params = null): PDOStatement|false
     {
-        try
-        {
+        try {
             $stmt = $this->getDB()->prepare($sql);
             $stmt->execute($params);
             return $stmt;
-        }
-        catch (PDOException $e){
-            echo'Erreur pour la requete: ' . $sql . PHP_EOL . $e->getMessage();
+        } catch (PDOException $e) {
+            echo 'Erreur pour la requête: ' . $sql . PHP_EOL . $e->getMessage();
             return false;
         }
     }
-
 }

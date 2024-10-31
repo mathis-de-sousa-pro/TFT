@@ -5,71 +5,76 @@ namespace Controllers\Router;
 use Exception;
 
 /**
- * Class Route
+ * Classe Route
  *
- * Abstract class that defines the structure for routing.
- *
+ * Classe abstraite qui définit la structure pour le routage.
  */
 abstract class Route
 {
     /**
-     * Route constructor.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * Determines the method to be used (GET or POST) and calls the appropriate route handler.
+     * Détermine la méthode à utiliser (GET ou POST) et appelle le gestionnaire de route approprié.
      *
-     * @param array $params The parameters for the route.
-     * @param string $method The HTTP method to be used (default is 'GET').
+     * @param array $params
+     * Les paramètres pour la route.
+     * @param string $method
+     * La méthode HTTP à utiliser (par défaut 'GET').
+     *
      * @return void
      */
-    public function action($params, $method='GET')
+    public function action(array $params, string $method = 'GET'): void
     {
-        if($_SERVER['REQUEST_METHOD'] == $method)
-        {
+        if ($_SERVER['REQUEST_METHOD'] == $method) {
             $this->getRoute($params);
-        }
-        else
-        {
+        } else {
             $this->postRoute($params);
         }
     }
 
     /**
-     * Return parameter if it exists, otherwise throw an exception.
+     * Retourne le paramètre s'il existe, sinon lève une exception.
      *
-     * @param array $array The array containing the parameters.
-     * @param string $paramName The name of the parameter to retrieve.
-     * @param bool $canBeEmpty Whether the parameter can be empty (default is true).
-     * @return mixed The value of the parameter.
-     * @throws Exception If the parameter is missing or empty (when $canBeEmpty is false).
+     * @param array $array
+     * Le tableau contenant les paramètres.
+     * @param string $paramName
+     * Le nom du paramètre à récupérer.
+     * @param bool $canBeEmpty
+     * Indique si le paramètre peut être vide (par défaut true).
+     *
+     * @return string
+     * La valeur du paramètre.
+     *
+     * @throws Exception
+     * Si le paramètre est manquant ou vide (lorsque $canBeEmpty est false).
      */
-    public function getParam(array $array, string $paramName, bool $canBeEmpty = true)
+    public function getParam(array $array, string $paramName, bool $canBeEmpty = true): string
     {
         if (isset($array[$paramName])) {
-            if(!$canBeEmpty && empty($array[$paramName]))
-                throw new Exception("Parameter '$paramName' empty");
+            if (!$canBeEmpty && empty($array[$paramName])) {
+                throw new Exception("Le paramètre '$paramName' est vide");
+            }
             return $array[$paramName];
-        } else
-            throw new Exception("Parameter '$paramName' missing");
+        } else {
+            throw new Exception("Le paramètre '$paramName' est manquant");
+        }
     }
 
     /**
-     * Handle GET requests for the route.
+     * Gère les requêtes GET pour la route.
      *
-     * @param array $params The parameters for the route.
+     * @param array $params
+     * Les paramètres pour la route.
+     *
      * @return void
      */
-    public abstract function getRoute(array $params): void;
+    abstract public function getRoute(array $params): void;
 
     /**
-     * Handle POST requests for the route.
+     * Gère les requêtes POST pour la route.
      *
-     * @param array $params The parameters for the route.
+     * @param array $params
+     * Les paramètres pour la route.
+     *
      * @return void
      */
-    public abstract function postRoute(array $params): void;
+    abstract public function postRoute(array $params): void;
 }

@@ -5,34 +5,36 @@ namespace Controllers\Router\Routes;
 use Controllers\MainController;
 use Controllers\Router\Route;
 
-
 /**
- * Class RouteHome
+ * Classe RouteHome
  *
- * This class handles the routing for the home page.
- *
+ * Cette classe gère le routage pour la page d'accueil.
  */
 class RouteHome extends Route
 {
     /**
-     * @var MainController $mainController The controller responsible for home page operations.
+     * @var MainController $mainController
+     * Le contrôleur responsable des opérations de la page d'accueil.
      */
     private MainController $mainController;
 
     /**
-     * RouteHome constructor.
+     * Constructeur de la classe RouteHome.
      *
-     * @param MainController $mainController The home controller instance.
+     * @param MainController $mainController
+     * L'instance du contrôleur de la page d'accueil.
      */
     public function __construct(MainController $mainController)
     {
         $this->mainController = $mainController;
     }
 
-    /*
-     * Handle GET requests for the home route.
+    /**
+     * Gère les requêtes GET pour la route de la page d'accueil.
      *
-     * @param array $params The parameters for the route.
+     * @param array $params
+     * Les paramètres pour la route.
+     *
      * @return void
      */
     public function getRoute(array $params): void
@@ -41,13 +43,15 @@ class RouteHome extends Route
     }
 
     /**
-     * Handle POST requests for the home route.
+     * Gère les requêtes POST pour la route de la page d'accueil.
      *
-     * @param array $params The parameters for the route.
+     * @param array $params
+     * Les paramètres pour la route.
+     *
      * @return void
      */
     public function postRoute(array $params): void
     {
-        // TODO: Implement postRoute() method.
+        // TODO: Implémenter la méthode postRoute().
     }
 }
